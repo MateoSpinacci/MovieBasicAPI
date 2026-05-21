@@ -21,6 +21,10 @@ async function findAll(filtros) {
         }
     }
     total.where = where;
+    if (filtros.limit) {
+        total.limit = filtros.limit;
+        total.offset = filtros.offset;
+    }
     if (filtros.order) {
         total.order = [filtros.order];
     }

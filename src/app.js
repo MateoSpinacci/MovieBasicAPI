@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const sequelize = require('./db');
 const { Movie, Review } = require("./models");
-const config = require('./config/movieConfig');
 const movieRoutes = require('./routes/movieRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 
@@ -49,7 +49,47 @@ async function start() {
                     watched: true,
                     releaseYear: 2014,
                     rating: 9,
-                }
+                },
+                {
+                    title: 'shrek',
+                    director: 'andrew adamson and vicky jenson',
+                    genre: 'animation',
+                    watched: true,
+                    releaseYear: 2001,
+                    rating: 8,
+                },
+                {
+                    title: 'transformers: revenge of the fallen',
+                    director: 'michael bay',
+                    genre: 'action',
+                    watched: false,
+                    releaseYear: 2009,
+                    rating: 5,
+                },
+                {
+                    title: 'la la land',
+                    director: 'damien chazelle',
+                    genre: 'musical',
+                    watched: true,
+                    releaseYear: 2016,
+                    rating: 7,
+                },
+                {
+                    title: 'the conjuring',
+                    director: 'james wan',
+                    genre: 'horror',
+                    watched: false,
+                    releaseYear: 2013,
+                    rating: 4,
+                },
+                {
+                    title: 'free guy',
+                    director: 'shawn levy',
+                    genre: 'comedy',
+                    watched: true,
+                    releaseYear: 2021,
+                    rating: 7,
+                },
             ])
 
             await Review.bulkCreate([
@@ -70,13 +110,49 @@ async function start() {
                     comentario: 'No me gustó para nada, no recomiendo esta película', 
                     autor: 'Lionel',
                     score: 2
+                },
+                {
+                    movieId: 1,
+                    comentario: 'Muy divertida',
+                    autor: 'Mateo',
+                    score: 8
+                },
+                {
+                    movieId: 2,
+                    comentario: 'Increíble final',
+                    autor: 'Juan',
+                    score: 9
+                },
+                {
+                    movieId: 2,
+                    comentario: 'Muy larga',
+                    autor: 'Lucía',
+                    score: 7
+                },
+                {
+                    movieId: 4,
+                    comentario: 'No me gustó',
+                    autor: 'Tomás',
+                    score: 4
+                },
+                {
+                    movieId: 5,
+                    comentario: 'Da bastante miedo',
+                    autor: 'Carla',
+                    score: 7
+                },
+                {
+                    movieId: 7,
+                    comentario: 'Muy graciosa',
+                    autor: 'Sofía',
+                    score: 8
                 }
             ])
 
         };
 
-        app.listen(config.port, () => {
-            console.log(`API escuchando en http://localhost:${config.port}`);
+        app.listen(process.env.PORT, () => {
+            console.log(`API escuchando en http://localhost:${process.env.PORT}`);
         });
 
     } catch (error) {

@@ -19,7 +19,23 @@ async function identificarFiltros(query) {
     if (query.minRating) {
         filtros.minRating = query.minRating;
     }
-
+    if (query.page) {
+        const pags = Number.parseInt(query.page);
+        if (Number.isInteger(pags) && pags > 0) {
+            if (query.limit) {
+                const limit = Number.parseInt(query.limit);
+                if (!Number.isInteger(limit) || limit < 0) {
+                    throw new appError('Cantidad de Páginas Invalida', 400)
+                }
+            } else {
+                query.limit = 5;
+            }
+            filtros.limit = query.limit;
+            filtros.offset = (pags - 1) * query.limit;
+        } else {
+            throw new appError('Página Invalida', 400);
+        }
+    }
     if (query.order) {
         if (query.direction === undefined) {
             query.direction = 'ASC';

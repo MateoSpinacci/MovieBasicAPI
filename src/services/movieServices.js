@@ -42,6 +42,23 @@ async function identificarFiltros(query) {
     if (query.minRating) {
         filtros.minRating = query.minRating;
     }
+    if (query.page) {
+        const pags = Number.parseInt(query.page);
+        if (Number.isInteger(pags) && pags > 0) {
+            if (query.limit) {
+                const limit = Number.parseInt(query.limit);
+                if (!Number.isInteger(limit) || limit < 0) {
+                    throw new appError('Cantidad de Páginas Invalida', 400)
+                }
+            } else {
+                query.limit = 1;
+            }
+            filtros.limit = query.limit;
+            filtros.offset = (pags - 1) * query.limit;
+        } else {
+            throw new appError('Página Invalida', 400);
+        }
+    }
     if (query.order) {
         if (query.direction === undefined) {
             query.direction = 'ASC';
@@ -81,16 +98,21 @@ async function createMovie(body) {
     }
     if (body.releaseYear === undefined) {
         throw new appError('No Se Puede Añadir Una Pelicula Sin Año De Lanzamiento', 400)
+    } 
+    if (body.rating !== undefined) {
+        if (body.rating < 0 || body.rating > 10) {
+            throw new appError('El Puntaje Solo Puede Estar Entre 0-10', 400)
+        }
     }
-    if (body.rating < 0 || body.rating > 10) {
-        throw new appError('El Puntaje Solo Puede Estar Entre 0-10', 400)
-    }
+    
     return await repo.createMovie(body);
 }
 
 async function updateMovie(body, idString) {
-    if (body.rating < 0 || body.rating > 10) {
-        throw new appError('El Puntaje Solo Puede Estar Entre 0-10', 400)
+    if (body.rating !== undefined) {
+        if (body.rating < 0 || body.rating > 10) {
+            throw new appError('El Puntaje Solo Puede Estar Entre 0-10', 400)
+        }
     }
     const movieToBeUpdated = await repo.updateMovie(body, idString)
     if (!movieToBeUpdated) {
